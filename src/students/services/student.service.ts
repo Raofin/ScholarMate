@@ -17,14 +17,14 @@ export class StudentService {
     {
       id: 2,
       name: 'Zaid',
-      studentId: '21-42459-1',
+      studentId: '21-42459-2',
       dept: Department.EEE,
       courses: ['DLC', 'VLSI'],
     },
     {
       id: 3,
       name: 'Amin',
-      studentId: '22-42459-1',
+      studentId: '22-42459-3',
       dept: Department.CSE,
       courses: ['Data Structures', 'Algorithms', 'Design Patterns'],
     },
@@ -70,5 +70,15 @@ export class StudentService {
     if (studentIndex >= 0) {
       this.students.splice(studentIndex, 1);
     }
+  }
+
+  findCoursesById(id: number) {
+    const existingStudent = this.findById(id);
+
+    if (!existingStudent) {
+      throw new Error(`Student with id: ${id} not found.`);
+    }
+
+    return existingStudent.courses;
   }
 }

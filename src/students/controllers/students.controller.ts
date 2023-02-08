@@ -1,7 +1,7 @@
 import {
   Body, Controller, Delete, Get, Param,
   ParseArrayPipe, ParseEnumPipe, ParseIntPipe,
-  Post, Put, UsePipes,
+  Post, Put, Patch, UsePipes,
 } from '@nestjs/common';
 import { StudentService } from '../services/student.service';
 import { CreateStudentDto } from '../dto/create-student.dto';
@@ -32,6 +32,13 @@ export class StudentsController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateStudentDto: UpdateStudentDto) {
+
+    const existingStudent = this.studentService.findById(id);
+
+    if (!existingStudent) {
+      throw new Error(`Student with id: ${id} not found.`);
+    }
+
     return this.studentService.update(id, updateStudentDto);
   }
 
@@ -50,5 +57,10 @@ export class StudentsController {
   @UsePipes(new ParseEnumPipe(Department))
   findByDept(@Param('dept') dept) {
     return this.studentService.findByDept(dept);
+  }
+
+  @Get('/:id/courses')
+  findCoursesById(@Param('id', ParseIntPipe) id: number) {
+    return this.studentService.findCoursesById(id);
   }
 }
