@@ -3,10 +3,10 @@ import {
   ParseArrayPipe, ParseEnumPipe, ParseIntPipe,
   Post, Put, UsePipes,
 } from '@nestjs/common';
-import { StudentService } from './student.service';
-import { CreateStudentDto } from './dto/create-student.dto';
-import { UpdateStudentDto } from './dto/update-student.dto';
-import { Department } from './constants/students.constants';
+import { StudentService } from '../services/student.service';
+import { CreateStudentDto } from '../dto/create-student.dto';
+import { UpdateStudentDto } from '../dto/update-student.dto';
+import { Department } from '../constants/students.constants';
 
 @Controller('students')
 export class StudentsController {
