@@ -1,74 +1,54 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
+  Body, Controller, Delete, Get, Param,
+  ParseArrayPipe, ParseEnumPipe, ParseIntPipe,
+  Post, Put, UsePipes,
 } from '@nestjs/common';
+import { StudentService } from './student.service';
+import { CreateStudentDto } from './dto/create-student.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
+import { Department } from './constants/students.constants';
 
 @Controller('students')
 export class StudentsController {
-  @Post()
-  create(@Body() body) {
-    return body;
+  constructor(private readonly studentService: StudentService) {
+  }
+
+  @Get()
+  findAll() {
+    return this.studentService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return `Student ID: ${id}.`;
+  findById(@Param('id', ParseIntPipe) id: number) {
+    return this.studentService.findById(id);
+  }
+
+  @Post()
+  create(@Body() createStudentDto: CreateStudentDto) {
+    return this.studentService.create(createStudentDto);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() body) {
-    return `Student with #${id} id has been updated.`;
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateStudentDto: UpdateStudentDto) {
+    return this.studentService.update(id, updateStudentDto);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number) {
-    return `Student with #${id} id has been deleted.`;
+  delete(@Param('id', ParseIntPipe) id: number) {
+    return this.studentService.remove(id);
   }
 
-  @Get()
-  find(@Query() paginationQuery) {
-    const { id, name } = paginationQuery;
-    return `Student ID: ${id}\nStudent Name: ${name}`;
+  @Get('/ids/:ids')
+  @UsePipes(new ParseArrayPipe({ items: Number, separator: ',' }))
+  findByIds(@Param('ids') id: number[]) {
+    return this.studentService.findByIds(id);
   }
 
-  @Get()
-  findById(@Query('id') id: number) {
-    return `Student ID: ${id}`;
-  }
-
-  @Get()
-  findByName(@Query('name') name: string) {
-    return `Student ID: ${name}`;
-  }
-
-  @Get()
-  findByDepartment(@Query('dept') dept: string) {
-    return `Students from the department of ${dept}`;
-  }
-
-  @Delete()
-  deleteByName(@Query('name') name: string) {
-    return `${name} has been deleted.`;
-  }
-
-  @Delete()
-  deleteByEmail(@Query('email') email: any) {
-    return `Student with "${email}" email has been deleted.`;
-  }
-
-  @Put()
-  updateById(@Param('id') id: string, @Body() body) {
-    return `Student with #${id} has been updated`;
-  }
-
-  @Put()
-  updateByEmail(@Param('email') email: string, @Body() body) {
-    return `Student with #${email} has been updated`;
+  @Get('/dept/:dept')
+  @UsePipes(new ParseEnumPipe(Department))
+  findByDept(@Param('dept') dept) {
+    return this.studentService.findByDept(dept);
   }
 }
