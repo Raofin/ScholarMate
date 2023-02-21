@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Student } from './student.entity';
 import { StudentDto, UpdateStudentDto } from './student.dto';
-import { Department } from './students.constants';
+import { Dept } from '../departments/department.constants';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -27,11 +27,11 @@ export class StudentService {
     return student;
   }
 
-  async findByDept(dept: Department) {
+  async findByDept(dept: Dept) {
     const students = await this.studentRepo.findBy({ dept: dept });
 
     if (!students) {
-      throw new NotFoundException(`There are not students in the department of ${dept}.`);
+      throw new NotFoundException(`There are no students in the department of ${dept}.`);
     }
 
     return students;

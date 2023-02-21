@@ -5,10 +5,10 @@ import {
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { StudentDto, UpdateStudentDto } from './student.dto';
-import { Department } from './students.constants';
+import { Dept } from '../departments/department.constants';
 
 @Controller('students')
-export class StudentsController {
+export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Get()
@@ -45,7 +45,7 @@ export class StudentsController {
   }
 
   @Get('/dept/:dept')
-  @UsePipes(new ParseEnumPipe(Department))
+  @UsePipes(new ParseEnumPipe(Dept))
   findByDept(@Param('dept') dept) {
     return this.studentService.findByDept(dept);
   }

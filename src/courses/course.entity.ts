@@ -1,8 +1,8 @@
-import { Dept } from '../departments/department.constants';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Dept } from '../departments/department.constants';
 
 @Entity()
-export class Student {
+export class Course {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -10,11 +10,8 @@ export class Student {
   name: string;
 
   @Column()
-  studentId: string;
+  studentId: number;
 
   @Column()
   dept: Dept;
-
-  @Column('json', { nullable: true })
-  courses: string[];
 }
