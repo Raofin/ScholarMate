@@ -20,7 +20,7 @@ export class StudentsController {
 
   @Get(':id')
   findById(@Param('id', ParseIntPipe) id: number) {
-    return this.studentService.findById(id);
+    return this.studentService.findOne(id);
   }
 
   @Post()
@@ -28,12 +28,12 @@ export class StudentsController {
     return this.studentService.create(createStudentDto);
   }
 
-  @Put(':id')
+  @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateStudentDto: UpdateStudentDto) {
 
-    const existingStudent = this.studentService.findById(id);
+    const existingStudent = this.studentService.findOne(id);
 
     if (!existingStudent) {
       throw new Error(`Student with id: ${id} not found.`);
@@ -45,12 +45,6 @@ export class StudentsController {
   @Delete(':id')
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.studentService.remove(id);
-  }
-
-  @Get('/ids/:ids')
-  @UsePipes(new ParseArrayPipe({ items: Number, separator: ',' }))
-  findByIds(@Param('ids') id: number[]) {
-    return this.studentService.findByIds(id);
   }
 
   @Get('/dept/:dept')

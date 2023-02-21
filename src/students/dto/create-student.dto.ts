@@ -2,7 +2,7 @@ import { IsEnum, IsNumber, IsString, Length, Matches } from 'class-validator';
 import { Department } from '../constants/students.constants';
 
 export class CreateStudentDto {
-  @IsNumber({}, { message: 'ID must be a number' })
+  // @IsNumber({}, { message: 'ID must be a number' })
   readonly id: number;
 
   @IsString({ message: 'Name must be a string' })
