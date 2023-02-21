@@ -1,7 +1,8 @@
 import { IsEnum, IsNumber, IsString, Length, Matches } from 'class-validator';
-import { Department } from '../constants/students.constants';
+import { Department } from './students.constants';
+import { PartialType } from '@nestjs/mapped-types';
 
-export class CreateStudentDto {
+export class StudentDto {
   // @IsNumber({}, { message: 'ID must be a number' })
   readonly id: number;
 
@@ -19,3 +20,5 @@ export class CreateStudentDto {
   @IsString({ each: true, message: 'Courses must be an array of strings' })
   readonly courses: string[];
 }
+
+export class UpdateStudentDto extends PartialType(StudentDto) {}

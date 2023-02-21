@@ -1,4 +1,4 @@
-import { Department } from '../constants/students.constants';
+import { Department } from './students.constants';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

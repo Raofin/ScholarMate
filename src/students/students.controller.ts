@@ -3,15 +3,13 @@ import {
   ParseArrayPipe, ParseEnumPipe, ParseIntPipe,
   Post, Put, Patch, UsePipes,
 } from '@nestjs/common';
-import { StudentService } from '../services/student.service';
-import { CreateStudentDto } from '../dto/create-student.dto';
-import { UpdateStudentDto } from '../dto/update-student.dto';
-import { Department } from '../constants/students.constants';
+import { StudentService } from './student.service';
+import { StudentDto, UpdateStudentDto } from './student.dto';
+import { Department } from './students.constants';
 
 @Controller('students')
 export class StudentsController {
-  constructor(private readonly studentService: StudentService) {
-  }
+  constructor(private readonly studentService: StudentService) {}
 
   @Get()
   findAll() {
@@ -24,7 +22,7 @@ export class StudentsController {
   }
 
   @Post()
-  create(@Body() createStudentDto: CreateStudentDto) {
+  create(@Body() createStudentDto: StudentDto) {
     return this.studentService.create(createStudentDto);
   }
 
@@ -32,7 +30,6 @@ export class StudentsController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateStudentDto: UpdateStudentDto) {
-
     const existingStudent = this.studentService.findOne(id);
 
     if (!existingStudent) {

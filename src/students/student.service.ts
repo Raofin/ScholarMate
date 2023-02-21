@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Student } from '../entities/student.entity';
-import { CreateStudentDto } from '../dto/create-student.dto';
-import { UpdateStudentDto } from '../dto/update-student.dto';
-import { Department } from '../constants/students.constants';
+import { Student } from './student.entity';
+import { StudentDto, UpdateStudentDto } from './student.dto';
+import { Department } from './students.constants';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -38,7 +37,7 @@ export class StudentService {
     return students;
   }
 
-  create(createStudentDto: CreateStudentDto) {
+  create(createStudentDto: StudentDto) {
     const student = this.studentRepo.create(createStudentDto);
     return this.studentRepo.save(student);
   }
@@ -53,7 +52,7 @@ export class StudentService {
       throw new NotFoundException(`Student #${id} not found.`);
     }
 
-    return this.studentRepo.save(student);
+    return this.studentRepo.update(id, student);
   }
 
   async remove(id: number) {
