@@ -4,7 +4,7 @@ import {
   Post, Put, Patch, UsePipes,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
-import { StudentDto, UpdateStudentDto } from './student.dto';
+import { CreateStudentDto, UpdateStudentDto } from './student.dto';
 
 @Controller('students')
 export class StudentController {
@@ -21,7 +21,7 @@ export class StudentController {
   }
 
   @Post()
-  create(@Body() createStudentDto: StudentDto) {
+  create(@Body() createStudentDto: CreateStudentDto) {
     return this.studentService.create(createStudentDto);
   }
 

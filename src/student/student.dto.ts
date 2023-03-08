@@ -1,7 +1,7 @@
 import { IsDate, IsEmail, IsNumber, IsString, Length, Matches } from "class-validator";
 import { PartialType } from '@nestjs/mapped-types';
 
-export class StudentDto {
+export class CreateStudentDto {
   readonly id: number;
 
   @IsString()
@@ -35,4 +35,4 @@ export class StudentDto {
   readonly departmentId: number;
 }
 
-export class UpdateStudentDto extends PartialType(StudentDto) {}
+export class UpdateStudentDto extends PartialType(CreateStudentDto) {}

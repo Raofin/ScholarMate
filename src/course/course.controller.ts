@@ -4,7 +4,7 @@ import {
   Post, Put, Patch, UsePipes, NotFoundException
 } from '@nestjs/common';
 import { CourseService } from './course.service';
-import { CourseDto, UpdateCourseDto } from './course.dto';
+import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 
 @Controller('courses')
 export class CourseController {
@@ -21,7 +21,7 @@ export class CourseController {
   }
 
   @Post()
-  create(@Body() createCourseDto: CourseDto) {
+  create(@Body() createCourseDto: CreateCourseDto) {
     return this.courseService.create(createCourseDto);
   }
 

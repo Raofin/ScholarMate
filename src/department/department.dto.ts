@@ -1,7 +1,7 @@
 import { IsNumber, IsString, Length } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
-export class DepartmentDto {
+export class CreateDepartmentDto {
   readonly id: number;
 
   @IsString()
@@ -19,4 +19,4 @@ export class DepartmentDto {
   readonly adminId: number;
 }
 
-export class UpdateDepartmentDto extends PartialType(DepartmentDto) {}
+export class UpdateDepartmentDto extends PartialType(CreateDepartmentDto) {}

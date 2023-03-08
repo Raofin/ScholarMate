@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Course } from './course.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CourseDto, UpdateCourseDto } from './course.dto';
+import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 
 @Injectable()
 export class CourseService {
@@ -35,7 +35,7 @@ export class CourseService {
     return courses;
   }*/
 
-  create(createCourseDto: CourseDto) {
+  create(createCourseDto: CreateCourseDto) {
     const course = this.courseRepo.create(createCourseDto);
     return this.courseRepo.save(course);
   }

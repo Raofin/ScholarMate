@@ -4,7 +4,7 @@ import {
   Post, Put, Patch, UsePipes, NotFoundException
 } from '@nestjs/common';
 import { DepartmentService } from './department.service';
-import { DepartmentDto, UpdateDepartmentDto } from './department.dto';
+import { CreateDepartmentDto, UpdateDepartmentDto } from './department.dto';
 
 @Controller('departments')
 export class DepartmentController {
@@ -21,7 +21,7 @@ export class DepartmentController {
   }
 
   @Post()
-  create(@Body() createDepartmentDto: DepartmentDto) {
+  create(@Body() createDepartmentDto: CreateDepartmentDto) {
     return this.departmentService.create(createDepartmentDto);
   }
 

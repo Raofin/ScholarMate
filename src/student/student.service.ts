@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Student } from './student.entity';
-import { StudentDto, UpdateStudentDto } from './student.dto';
+import { CreateStudentDto, UpdateStudentDto } from './student.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -36,7 +36,7 @@ export class StudentService {
     return students;
   }*/
 
-  create(createStudentDto: StudentDto) {
+  create(createStudentDto: CreateStudentDto) {
     const student = this.studentRepo.create(createStudentDto);
     return this.studentRepo.save(student);
   }

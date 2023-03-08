@@ -1,7 +1,7 @@
 import { IsNumber, IsString, Length } from "class-validator";
 import { PartialType } from "@nestjs/mapped-types";
 
-export class CourseDto {
+export class CreateCourseDto {
   readonly id: number;
 
   @IsString({ message: "Course name must be a string" })
@@ -26,4 +26,4 @@ export class CourseDto {
   readonly registrarId: number;
 }
 
-export class UpdateCourseDto extends PartialType(CourseDto) {}
+export class UpdateCourseDto extends PartialType(CreateCourseDto) {}

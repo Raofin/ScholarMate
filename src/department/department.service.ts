@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DepartmentDto, UpdateDepartmentDto } from './department.dto';
+import { CreateDepartmentDto, UpdateDepartmentDto } from './department.dto';
 import { Department } from './department.entity';
 
 @Injectable()
@@ -25,7 +25,7 @@ export class DepartmentService {
     return department;
   }
 
-  create(createDepartmentDto: DepartmentDto) {
+  create(createDepartmentDto: CreateDepartmentDto) {
     const course = this.departmentRepo.create(createDepartmentDto);
     return this.departmentRepo.save(course);
   }
