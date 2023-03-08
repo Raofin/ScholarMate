@@ -1,4 +1,8 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Student } from '../student/student.entity';
+import { Admin } from '../admin/admin.entity';
+import { Faculty } from '../faculty/faculty.entity';
+import { Registrar } from '../registrar/registrar.entity';
 
 @Entity('Upload')
 export class Upload {
@@ -11,15 +15,19 @@ export class Upload {
   @Column({ name: 'UploadDate' })
   uploadDate: Date;
 
-  @Column({ name: 'StudentID' })
-  studentId: number;
+  @ManyToOne(() => Student, student => student.upload)
+  @JoinColumn({ name: 'StudentID' })
+  student: Student;
 
-  @Column({ name: 'FacultyID' })
-  facultyId: number;
+  @ManyToOne(() => Faculty, faculty => faculty.upload)
+  @JoinColumn({ name: 'FacultyID' })
+  faculty: Faculty;
 
-  @Column({ name: 'RegistrarID' })
-  registrarId: number;
+  @ManyToOne(() => Registrar, registrar => registrar.upload)
+  @JoinColumn({ name: 'RegistrarID' })
+  registrar: Registrar;
 
-  @Column({ name: 'AdminID' })
-  adminId: number;
+  @ManyToOne(() => Admin, admin => admin.upload)
+  @JoinColumn({ name: 'AdminID' })
+  admin: Admin;
 }

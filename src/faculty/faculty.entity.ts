@@ -1,4 +1,7 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Grade } from '../grade/grade.entity';
+import { Department } from '../department/department.entity';
+import { Upload } from '../upload/upload.entity';
 
 @Entity('Faculty')
 export class Faculty {
@@ -23,5 +26,13 @@ export class Faculty {
   @Column({ name: 'JoinDate' })
   joinDate: Date;
 
-  departmentId: number;
+  @ManyToOne(() => Department, department => department.faculties)
+  @JoinColumn({ name: 'DepartmentID' })
+  department: Department;
+
+  @OneToMany(() => Grade, grade => grade.faculty)
+  grade: Grade[];
+
+  @OneToMany(() => Upload, upload => upload.faculty)
+  upload: Upload[];
 }

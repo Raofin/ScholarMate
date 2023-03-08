@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Department } from '../department/department.entity';
+import { Upload } from '../upload/upload.entity';
 
 @Entity('Admin')
 export class Admin {
@@ -19,4 +21,10 @@ export class Admin {
 
   @Column({ name: 'JoinDate' })
   joinDate: Date;
+
+  @OneToMany(() => Department, department => department.admin)
+  departments: Department[];
+
+  @OneToMany(() => Upload, upload => upload.admin)
+  upload: Upload[];
 }

@@ -1,15 +1,12 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Student } from '../student/student.entity';
+import { Registrar } from '../registrar/registrar.entity';
+import { Course } from '../course/course.entity';
 
 @Entity('Enrollment')
 export class Enrollment {
   @PrimaryGeneratedColumn({ name: 'ID'})
   id: number;
-
-  @Column({ name: 'StudentID' })
-  studentId: number;
-
-  @Column({ name: 'CourseID' })
-  courseId: number;
 
   @Column({ name: 'Status' })
   status: string;
@@ -17,6 +14,15 @@ export class Enrollment {
   @Column({ name: 'EnrollmentDate' })
   enrollmentDate: Date;
 
-  @Column({ name: 'RegistrarID' })
-  registrarId: number;
+  @ManyToOne(() => Student, student => student.enrollment)
+  @JoinColumn({ name: 'StudentID' })
+  student: Student;
+
+  @ManyToOne(() => Course, course => course.enrollment)
+  @JoinColumn({ name: 'CourseID' })
+  course: Course;
+
+  @ManyToOne(() => Registrar, registrar => registrar.enrollment)
+  @JoinColumn({ name: 'RegistrarID' })
+  registrar: Registrar;
 }

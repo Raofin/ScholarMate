@@ -1,4 +1,7 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Enrollment } from '../enrollment/enrollment.entity';
+import { Upload } from '../upload/upload.entity';
+import { Course } from '../course/course.entity';
 
 @Entity('Registrar')
 export class Registrar {
@@ -19,4 +22,13 @@ export class Registrar {
 
   @Column({ name: 'JoinDate' })
   joinDate: Date;
+
+  @OneToMany(() => Enrollment, enrollment => enrollment.registrar)
+  enrollment: Enrollment[];
+
+  @OneToMany(() => Upload, upload => upload.registrar)
+  upload: Upload[];
+
+  @OneToMany(() => Course, course => course.registrar)
+  course: Course[];
 }
