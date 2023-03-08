@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
-import { StudentModule } from "./students/student.module";
+import { StudentModule } from "./student/student.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { CoursesModule } from "./courses/course.module";
-import { DepartmentModule } from "./departments/department.module";
+import { CoursesModule } from "./course/course.module";
+import { DepartmentModule } from "./department/department.module";
 
 @Module({
   imports: [StudentModule, CoursesModule, DepartmentModule, TypeOrmModule.forRoot({
