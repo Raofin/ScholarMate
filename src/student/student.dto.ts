@@ -1,5 +1,6 @@
-import { IsDate, IsEmail, IsNumber, IsString, Length, Matches } from "class-validator";
+import { IsDate, IsDateString, IsEmail, IsNumber, IsString, Length, Matches } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
+import { Department } from '../department/department.entity';
 
 export class CreateStudentDto {
   readonly id: number;
@@ -28,7 +29,7 @@ export class CreateStudentDto {
   @IsNumber({}, { message: 'CGPA must be a number' })
   readonly cgpa: number;
 
-  @IsDate({ message: 'Join date must be a valid date' })
+  @IsDateString()
   readonly joinDate: Date;
 
   @IsNumber({}, { message: 'Department ID must be a number' })

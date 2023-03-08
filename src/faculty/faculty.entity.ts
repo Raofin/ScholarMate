@@ -18,10 +18,10 @@ export class Faculty {
   email: string;
 
   @Column({ name: 'Password' })
-  password: number;
+  password: string;
 
   @Column({ name: 'Phone' })
-  phone: number;
+  phone: string;
 
   @Column({ name: 'JoinDate' })
   joinDate: Date;

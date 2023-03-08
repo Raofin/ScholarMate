@@ -1,4 +1,4 @@
-import { IsDate, IsNumber, IsString, Length } from 'class-validator';
+import { IsDate, IsDateString, IsNumber, IsString, Length } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateUploadDto {
@@ -7,7 +7,7 @@ export class CreateUploadDto {
   @IsString({ message: 'Name must be a string' })
   readonly fileName: string;
 
-  @IsDate({ message: 'Upload date must be a valid date' })
+  @IsDateString()
   readonly uploadDate: Date;
 
   readonly facultyId: number;

@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, IsNumber, IsString, Length, Matches } from 'class-validator';
+import { IsDate, IsDateString, IsEmail, IsNumber, IsString, Length, Matches } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateRegistrarDto {
@@ -13,12 +13,12 @@ export class CreateRegistrarDto {
 
   @IsString({ message: 'Password must be a string' })
   @Length(6, 20, { message: 'Password must be between 6 and 20 characters' })
-  readonly password: number;
+  readonly password: string;
 
   @Matches(/^\d{11}$/, { message: 'Phone must be 11 digits' })
   readonly phone: number;
 
-  @IsDate({ message: 'Join date must be a valid date' })
+  @IsDateString()
   readonly joinDate: Date;
 }
 

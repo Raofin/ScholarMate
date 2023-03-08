@@ -33,8 +33,8 @@ export class Student {
   @Column({ name: 'JoinDate' })
   joinDate: Date;
 
-  @ManyToOne(() => Department, department => department.students)
   @JoinColumn({ name: 'DepartmentID' })
+  @ManyToOne(() => Department, department => department.students)
   department: Department;
 
   @OneToMany(() => Upload, upload => upload.student)

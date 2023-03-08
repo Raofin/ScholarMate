@@ -1,4 +1,4 @@
-import { IsDate, IsNumber, IsString, Length } from 'class-validator';
+import { IsDate, IsDateString, IsNumber, IsString, Length } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateEnrollmentDto {
@@ -12,7 +12,7 @@ export class CreateEnrollmentDto {
   @Length(4, 20, { message: 'Status must be between 4 and 20 characters' })
   readonly status: string;
 
-  @IsDate({ message: 'Enrollment date must be a valid date' })
+  @IsDateString()
   readonly enrollmentDate: Date;
 
   readonly registrarId: number;

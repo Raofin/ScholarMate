@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, IsNumber, IsString, Length, Matches } from 'class-validator';
+import { IsDate, IsDateString, IsEmail, IsNumber, IsString, Length, Matches } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateAdminDto {
@@ -18,7 +18,7 @@ export class CreateAdminDto {
   @Matches(/^\d{11}$/, { message: 'Phone must be 11 digits' })
   readonly phone: number;
 
-  @IsDate({ message: 'Join date must be a valid date' })
+  @IsDateString()
   readonly joinDate: Date;
 }
 
