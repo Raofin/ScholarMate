@@ -1,10 +1,27 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Student } from '../students/student.entity';
+import { Course } from '../courses/course.entity';
 
-@Entity()
+@Entity('Department')
 export class Department {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'ID'})
   id: number;
 
-  @Column()
+  @Column({ name: 'Name'})
   name: string;
+
+  @Column({ name: 'Description'})
+  description: string;
+
+  @Column({ name: 'HeadID'})
+  headId: number;
+
+  @Column({ name: 'AdminID'})
+  adminId: number;
+
+  @OneToMany(() => Student, student => student.department)
+  students: Student[];
+
+  @OneToMany(() => Course, course => course.department)
+  courses: Course[];
 }
