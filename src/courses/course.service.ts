@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Course } from './course.entity';
-import { Dept } from '../departments/department.constants';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CourseDto, UpdateCourseDto } from './course.dto';
@@ -26,7 +25,7 @@ export class CourseService {
     return course;
   }
 
-  async findByDept(dept: Dept) {
+  /*async findByDept(dept: Dept) {
     const courses = await this.courseRepo.findBy({ dept: dept });
 
     if (!courses) {
@@ -34,7 +33,7 @@ export class CourseService {
     }
 
     return courses;
-  }
+  }*/
 
   create(createCourseDto: CourseDto) {
     const course = this.courseRepo.create(createCourseDto);

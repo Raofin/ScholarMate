@@ -1,17 +1,27 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Dept } from '../departments/department.constants';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Department } from '../departments/department.entity';
 
-@Entity()
+@Entity('Course')
 export class Course {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'ID'})
   id: number;
 
-  @Column()
+  @Column({ name: 'Name'})
   name: string;
 
-  @Column()
-  studentId: number;
+  @Column({ name: 'Code'})
+  code: string;
 
-  @Column()
-  dept: Dept;
+  @Column({ name: 'Description'})
+  description: string;
+
+  @Column({ name: 'Credit'})
+  credit: number;
+
+  @ManyToOne(() => Department, department => department.courses)
+  @JoinColumn({ name: 'DepartmentID' })
+  department: Department;
+
+  @Column({ name: 'RegistrarID'})
+  registrarId: number;
 }
