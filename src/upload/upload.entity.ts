@@ -11,15 +11,15 @@ export class Upload {
   @Column({ name: 'UploadDate' })
   uploadDate: Date;
 
+  @Column({ name: 'StudentID' })
+  studentId: number;
+
   @Column({ name: 'FacultyID' })
   facultyId: number;
-
-  @Column({ name: 'AdminID' })
-  adminId: number;
 
   @Column({ name: 'RegistrarID' })
   registrarId: number;
 
-  @Column({ name: 'StudentID' })
-  studentId: number;
+  @Column({ name: 'AdminID' })
+  adminId: number;
 }
