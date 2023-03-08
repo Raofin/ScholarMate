@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { StudentDto, UpdateStudentDto } from './student.dto';
-import { Dept } from '../departments/department.constants';
 
 @Controller('students')
 export class StudentController {
@@ -44,7 +43,7 @@ export class StudentController {
     return this.studentService.remove(id);
   }
 
-  @Get('/dept/:dept')
+  /*@Get('/dept/:dept')
   @UsePipes(new ParseEnumPipe(Dept))
   findByDept(@Param('dept') dept) {
     return this.studentService.findByDept(dept);
@@ -53,5 +52,5 @@ export class StudentController {
   @Get('/:id/courses')
   findCoursesById(@Param('id', ParseIntPipe) id: number) {
     return this.studentService.findCoursesById(id);
-  }
+  }*/
 }

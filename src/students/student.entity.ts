@@ -1,20 +1,36 @@
-import { Dept } from '../departments/department.constants';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Department } from '../departments/department.entity';
 
-@Entity()
+@Entity('Student')
 export class Student {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'ID' })
   id: number;
 
-  @Column()
-  name: string;
-
-  @Column()
+  @Column({ name: 'StudentID' })
   studentId: string;
 
-  @Column()
-  dept: Dept;
+  @Column({ name: 'Name' })
+  name: string;
 
-  @Column('json', { nullable: true })
-  courses: string[];
+  @Column({ name: 'Email' })
+  email: string;
+
+  @Column({ name: 'Password' })
+  password: string;
+
+  @Column({ name: 'Phone' })
+  phone: string;
+
+  @Column({ name: 'CreditsCompleted' })
+  creditsCompleted: number;
+
+  @Column({ name: 'CGPA' })
+  cgpa: number;
+
+  @Column({ name: 'JoinDate' })
+  joinDate: Date;
+
+  @ManyToOne(() => Department, department => department.students)
+  @JoinColumn({ name: 'DepartmentID' })
+  department: Department;
 }

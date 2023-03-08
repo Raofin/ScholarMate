@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Student } from './student.entity';
 import { StudentDto, UpdateStudentDto } from './student.dto';
-import { Dept } from '../departments/department.constants';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -27,7 +26,7 @@ export class StudentService {
     return student;
   }
 
-  async findByDept(dept: Dept) {
+  /*async findByDept(dept: Dept) {
     const students = await this.studentRepo.findBy({ dept: dept });
 
     if (!students) {
@@ -35,7 +34,7 @@ export class StudentService {
     }
 
     return students;
-  }
+  }*/
 
   create(createStudentDto: StudentDto) {
     const student = this.studentRepo.create(createStudentDto);
@@ -60,7 +59,7 @@ export class StudentService {
     return this.studentRepo.remove(student);
   }
 
-  async findCoursesById(id: number) {
+  /*async findCoursesById(id: number) {
     const existingStudent = await this.findOne(id);
 
     if (!existingStudent) {
@@ -68,5 +67,5 @@ export class StudentService {
     }
 
     return existingStudent.courses;
-  }
+  }*/
 }
