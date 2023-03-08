@@ -20,6 +20,7 @@ import { GradeModule } from './grade/grade.module';
     RegistrarModule,
     UploadModule,
     EnrollmentModule,
+    GradeModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
