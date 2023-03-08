@@ -17,6 +17,7 @@ import { GradeModule } from './grade/grade.module';
     DepartmentModule,
     AdminModule,
     FacultyModule,
+    RegistrarModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
