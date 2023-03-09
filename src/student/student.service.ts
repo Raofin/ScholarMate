@@ -10,21 +10,21 @@ export class StudentService {
   constructor(
     @InjectRepository(Student)
     private readonly studentRepo: Repository<Student>,
-    @InjectRepository(Student)
+    @InjectRepository(Department)
     private readonly departmentRepo: Repository<Department>
   ) {
   }
 
   findAll() {
     return this.studentRepo.find({
-      relations: ['department']
+      relations: ['department', 'department.admin', 'department.head']
     });
   }
 
-  async findOne(id: number) {
+  async findById(id: number) {
     const student = await this.studentRepo.findOne({
       where: { id },
-      relations: ['department']
+      relations: ['department', 'department.admin', 'department.head']
     });
 
     if (!student) {
@@ -34,20 +34,14 @@ export class StudentService {
     return student;
   }
 
-  /*async findByDept(dept: Dept) {
-    const students = await this.studentRepo.findBy({ dept: dept });
-
-    if (!students) {
-      throw new NotFoundException(`There are no students in the department of ${dept}.`);
-    }
-
-    return students;
-  }*/
-
   async create(createStudentDto: CreateStudentDto) {
-    const department = await this.departmentRepo.findOneOrFail({
+    const department = await this.departmentRepo.findOne({
       where: { id: createStudentDto.departmentId }
     });
+
+    if (!department) {
+      throw new NotFoundException(`No departments with id: ${createStudentDto.departmentId}!`);
+    }
 
     const student = this.studentRepo.create({ ...createStudentDto, department });
 
@@ -55,41 +49,30 @@ export class StudentService {
   }
 
   async update(id: number, updateStudentDto: UpdateStudentDto) {
-    const department = await this.departmentRepo.findOneOrFail({
+    const department = await this.departmentRepo.findOne({
       where: { id: updateStudentDto.departmentId }
     });
 
-    const student = this.studentRepo.create({ id: +id, ...updateStudentDto, department });
+    if (!department) {
+      throw new NotFoundException(`No departments with id: ${updateStudentDto.departmentId}!`);
+    }
+
+    const student = await this.studentRepo.preload({ id: +id, ...updateStudentDto, department });
 
     if (!student) {
-      throw new NotFoundException(`Student #${id} not found.`);
+      throw new NotFoundException(`Student with id: ${id} not found.`);
     }
 
     return this.studentRepo.update(id, student);
   }
 
   async remove(id: number) {
-    const student = await this.findOne(id);
+    const student = await this.findById(id)
+
+    if (!student) {
+      throw new NotFoundException(`Student with id: ${id} not found.`);
+    }
+
     return this.studentRepo.remove(student);
   }
-
-  /*async findCoursesById(id: number) {
-    const existingStudent = await this.findOne(id);
-
-    if (!existingStudent) {
-      throw new Error(`Student with id: ${id} not found.`);
-    }
-
-    return existingStudent.courses;
-  }*/
-
-  /*private async preloadDepartmentById(id: number): Promise<Department> {
-    const existingDepartment = await this.departmentRepo.findOneBy({ id });
-
-    if (!existingDepartment) {
-      throw new NotFoundException(`Department with id: ${id} not found.`);
-    }
-
-    return existingDepartment;
-  }*/
 }

@@ -17,7 +17,7 @@ export class DepartmentController {
 
   @Get(':id')
   findById(@Param('id', ParseIntPipe) id: number) {
-    return this.departmentService.findOne(id);
+    return this.departmentService.findById(id);
   }
 
   @Post()
@@ -29,12 +29,6 @@ export class DepartmentController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDepartmentDto: UpdateDepartmentDto) {
-    const existingDepartment = this.departmentService.findOne(id);
-
-    if (!existingDepartment) {
-      throw new NotFoundException(`Department with id: ${id} not found.`);
-    }
-
     return this.departmentService.update(id, updateDepartmentDto);
   }
 

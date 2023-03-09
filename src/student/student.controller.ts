@@ -17,7 +17,7 @@ export class StudentController {
 
   @Get(':id')
   findById(@Param('id', ParseIntPipe) id: number) {
-    return this.studentService.findOne(id);
+    return this.studentService.findById(id);
   }
 
   @Post()
@@ -29,12 +29,6 @@ export class StudentController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateStudentDto: UpdateStudentDto) {
-    const existingStudent = this.studentService.findOne(id);
-
-    if (!existingStudent) {
-      throw new Error(`Student with id: ${id} not found.`);
-    }
-
     return this.studentService.update(id, updateStudentDto);
   }
 
@@ -42,15 +36,4 @@ export class StudentController {
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.studentService.remove(id);
   }
-
-  /*@Get('/dept/:dept')
-  @UsePipes(new ParseEnumPipe(Dept))
-  findByDept(@Param('dept') dept) {
-    return this.studentService.findByDept(dept);
-  }
-
-  @Get('/:id/courses')
-  findCoursesById(@Param('id', ParseIntPipe) id: number) {
-    return this.studentService.findCoursesById(id);
-  }*/
 }
