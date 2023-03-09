@@ -18,8 +18,8 @@ export class DepartmentService {
   ) {
   }
 
-  findAll() {
-    return this.departmentRepo.find({
+  async findAll() {
+    return await this.departmentRepo.find({
       relations: ['head', 'admin']
     });
   }

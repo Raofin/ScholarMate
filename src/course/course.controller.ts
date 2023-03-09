@@ -17,7 +17,7 @@ export class CourseController {
 
   @Get(':id')
   findById(@Param('id', ParseIntPipe) id: number) {
-    return this.courseService.findOne(id);
+    return this.courseService.findById(id);
   }
 
   @Post()
@@ -29,17 +29,11 @@ export class CourseController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCourseDto: UpdateCourseDto) {
-    const existingCourse = this.courseService.findOne(id);
-
-    if (!existingCourse) {
-      throw new NotFoundException(`Course with id: ${id} not found.`);
-    }
-
     return this.courseService.update(id, updateCourseDto);
   }
 
   @Delete(':id')
   delete(@Param('id', ParseIntPipe) id: number) {
-    return this.courseService.remove(id);
+    return this.courseService.delete(id);
   }
 }

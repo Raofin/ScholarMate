@@ -15,8 +15,8 @@ export class StudentService {
   ) {
   }
 
-  findAll() {
-    return this.studentRepo.find({
+  async findAll() {
+    return await this.studentRepo.find({
       relations: ['department', 'department.admin', 'department.head']
     });
   }

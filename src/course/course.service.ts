@@ -3,20 +3,31 @@ import { Course } from './course.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
+import { Department } from '../department/department.entity';
+import { Registrar } from '../registrar/registrar.entity';
 
 @Injectable()
 export class CourseService {
   constructor(
     @InjectRepository(Course)
-    private readonly courseRepo: Repository<Course>
+    private readonly courseRepo: Repository<Course>,
+    @InjectRepository(Department)
+    private readonly departmentRepo: Repository<Department>,
+    @InjectRepository(Registrar)
+    private readonly registrarRepo: Repository<Registrar>
   ) { }
 
-  findAll() {
-    return this.courseRepo.find();
+  async findAll() {
+    return await this.courseRepo.find({
+      relations: ['department', 'department.admin', 'department.head', 'registrar']
+    });
   }
 
-  async findOne(id: number) {
-    const course = await this.courseRepo.findOneBy({ id });
+  async findById(id: number) {
+    const course = await this.courseRepo.findOne({
+      where: { id },
+      relations: ['department', 'department.admin', 'department.head', 'registrar']
+    });
 
     if (!course) {
       throw new NotFoundException(`Course with id: ${id} not found.`);
@@ -25,26 +36,46 @@ export class CourseService {
     return course;
   }
 
-  /*async findByDept(dept: Dept) {
-    const courses = await this.courseRepo.findBy({ dept: dept });
+  async create(createCourseDto: CreateCourseDto) {
+    const department = await this.departmentRepo.findOne({
+      where: { id: createCourseDto.departmentId }
+    });
 
-    if (!courses) {
-      throw new NotFoundException(`There are no courses in the department of ${dept}.`);
+    const registrar = await this.registrarRepo.findOne({
+      where: { id: createCourseDto.registrarId }
+    });
+
+    if (!department) {
+      throw new NotFoundException(`No departments with id: ${createCourseDto.departmentId}!`);
     }
 
-    return courses;
-  }*/
+    if (!registrar) {
+      throw new NotFoundException(`No registrar with id: ${createCourseDto.registrarId}!`);
+    }
 
-  create(createCourseDto: CreateCourseDto) {
-    const course = this.courseRepo.create(createCourseDto);
+    const course = this.courseRepo.create({ ...createCourseDto, department, registrar });
+
     return this.courseRepo.save(course);
   }
 
   async update(id: number, updateCourseDto: UpdateCourseDto) {
-    const course = await this.courseRepo.preload({
-      id: +id,
-      ...updateCourseDto
+    const department = await this.departmentRepo.findOne({
+      where: { id: updateCourseDto.departmentId }
     });
+
+    const registrar = await this.registrarRepo.findOne({
+      where: { id: updateCourseDto.registrarId }
+    });
+
+    if (!department) {
+      throw new NotFoundException(`No departments with id: ${updateCourseDto.departmentId}!`);
+    }
+
+    if (!registrar) {
+      throw new NotFoundException(`No registrar with id: ${updateCourseDto.registrarId}!`);
+    }
+
+    const course = await this.courseRepo.preload({ id: +id, ...updateCourseDto, department, registrar });
 
     if (!course) {
       throw new NotFoundException(`Course #${id} not found.`);
@@ -53,8 +84,13 @@ export class CourseService {
     return this.courseRepo.update(id, course);
   }
 
-  async remove(id: number) {
-    const course = await this.findOne(id);
+  async delete(id: number) {
+    const course = await this.findById(id);
+
+    if (!course) {
+      throw new NotFoundException(`Course #${id} not found.`);
+    }
+
     return this.courseRepo.remove(course);
   }
 }
