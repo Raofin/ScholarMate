@@ -4,6 +4,9 @@ import { CreateStudentDto, UpdateStudentDto } from './student.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Department } from '../department/department.entity';
+import * as bcrypt from 'bcrypt';
+import { LoginDto } from './login.dto';
+import { Enrollment } from '../enrollment/enrollment.entity';
 
 @Injectable()
 export class StudentService {
@@ -11,7 +14,9 @@ export class StudentService {
     @InjectRepository(Student)
     private readonly studentRepo: Repository<Student>,
     @InjectRepository(Department)
-    private readonly departmentRepo: Repository<Department>
+    private readonly departmentRepo: Repository<Department>,
+    @InjectRepository(Enrollment)
+    private readonly enrollmentRepo: Repository<Enrollment>
   ) {
   }
 
@@ -34,7 +39,7 @@ export class StudentService {
     return student;
   }
 
-  async create(createStudentDto: CreateStudentDto) {
+  async register(createStudentDto: CreateStudentDto) {
     const department = await this.departmentRepo.findOne({
       where: { id: createStudentDto.departmentId }
     });
@@ -43,7 +48,11 @@ export class StudentService {
       throw new NotFoundException(`No departments with id: ${createStudentDto.departmentId}!`);
     }
 
-    const student = this.studentRepo.create({ ...createStudentDto, department });
+    const student = this.studentRepo.create({
+      ...createStudentDto,
+      password: this.encodePassword(createStudentDto.password),
+      department
+    });
 
     return this.studentRepo.save(student);
   }
@@ -57,7 +66,12 @@ export class StudentService {
       throw new NotFoundException(`No departments with id: ${updateStudentDto.departmentId}!`);
     }
 
-    const student = await this.studentRepo.preload({ id: +id, ...updateStudentDto, department });
+    const student = await this.studentRepo.preload({
+      id: +id,
+      ...updateStudentDto,
+      password: this.encodePassword(updateStudentDto.password),
+      department
+    });
 
     if (!student) {
       throw new NotFoundException(`Student with id: ${id} not found.`);
@@ -67,12 +81,61 @@ export class StudentService {
   }
 
   async remove(id: number) {
-    const student = await this.findById(id)
+    const student = await this.findById(id);
 
     if (!student) {
       throw new NotFoundException(`Student with id: ${id} not found.`);
     }
 
     return this.studentRepo.remove(student);
+  }
+
+  async login(loginDto: LoginDto) {
+    const student = await this.studentRepo.findOne({
+      where: { email: loginDto.email }
+    });
+
+    if (!student) {
+      throw new NotFoundException(`Student with email: ${loginDto.email} not found.`);
+    }
+
+    if (!this.comparePassword(loginDto.password, student.password)) {
+      throw new NotFoundException(`Invalid password.`);
+    }
+
+    return student;
+  }
+
+  async profile(email: string) {
+    const student = await this.studentRepo.findOne({
+      where: { email },
+      relations: ['department', 'department.admin', 'department.head']
+    });
+
+    if (!student) {
+      throw new NotFoundException(`Student with email: ${email} not found.`);
+    }
+
+    return student;
+  }
+
+  async courses(email: string) {
+
+    const student = await this.studentRepo.findOne({
+      where: { email }
+    });
+
+    return await this.enrollmentRepo.find({
+      where: { student }
+    });
+  }
+
+  encodePassword(rawPassword: string) {
+    const salt = bcrypt.genSaltSync();
+    return bcrypt.hashSync(rawPassword, salt);
+  }
+
+  comparePassword(rawPassword: string, encodedPassword: string) {
+    return bcrypt.compareSync(rawPassword, encodedPassword);
   }
 }
