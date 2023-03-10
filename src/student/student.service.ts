@@ -7,6 +7,7 @@ import { Department } from '../department/department.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './login.dto';
 import { Enrollment } from '../enrollment/enrollment.entity';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class StudentService {
@@ -16,7 +17,8 @@ export class StudentService {
     @InjectRepository(Department)
     private readonly departmentRepo: Repository<Department>,
     @InjectRepository(Enrollment)
-    private readonly enrollmentRepo: Repository<Enrollment>
+    private readonly enrollmentRepo: Repository<Enrollment>,
+    private readonly mailerService: MailerService
   ) {
   }
 
@@ -53,6 +55,14 @@ export class StudentService {
       password: this.encodePassword(createStudentDto.password),
       department
     });
+
+    const emailData = {
+      email: student.email,
+      subject: 'Registration Successful',
+      text: `Dear ${student.name}, Your registration was successful. Your Student ID is ${student.studentId}`,
+    };
+
+    await this.sendEmail(emailData);
 
     return this.studentRepo.save(student);
   }
@@ -137,5 +147,13 @@ export class StudentService {
 
   comparePassword(rawPassword: string, encodedPassword: string) {
     return bcrypt.compareSync(rawPassword, encodedPassword);
+  }
+
+  async sendEmail(data) {
+    return await this.mailerService.sendMail({
+      to: data.email,
+      subject: data.subject,
+      text: data.text
+    });
   }
 }

@@ -81,4 +81,10 @@ export class StudentController {
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.studentService.remove(id);
   }
+
+  @Post('send-email')
+  sendEmail() {
+    const data = 'hello world';
+    return this.studentService.sendEmail(data);
+  }
 }
