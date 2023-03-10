@@ -1,7 +1,7 @@
 import {
   Body, Controller, Delete, Get, Param,
   ParseArrayPipe, ParseEnumPipe, ParseIntPipe,
-  Post, Put, Patch, UsePipes, NotFoundException
+  Post, Put, Patch, UsePipes, NotFoundException, ValidationPipe
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
@@ -21,11 +21,13 @@ export class CourseController {
   }
 
   @Post()
+  @UsePipes(new ValidationPipe())
   create(@Body() createCourseDto: CreateCourseDto) {
     return this.courseService.create(createCourseDto);
   }
 
   @Patch(':id')
+  @UsePipes(new ValidationPipe())
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCourseDto: UpdateCourseDto) {

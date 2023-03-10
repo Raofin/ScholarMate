@@ -105,27 +105,35 @@ export class StudentService {
     return student;
   }
 
-  async update(id: number, updateStudentDto: UpdateStudentDto) {
+  async update(email: string, updateStudentDto: UpdateStudentDto) {
+    const existingStudent = await this.studentRepo.findOne({ where: { email } });
+
     const department = await this.departmentRepo.findOne({
       where: { id: updateStudentDto.departmentId }
     });
+
+    if (!existingStudent) {
+      throw new NotFoundException(`Student with email: ${email} not found.`);
+    }
 
     if (!department) {
       throw new NotFoundException(`No departments with id: ${updateStudentDto.departmentId}!`);
     }
 
+    let password = updateStudentDto.password;
+
+    if (password != null) {
+       password  = this.passwordService.encodePassword(updateStudentDto.password);
+    }
+
     const updatedStudent = await this.studentRepo.preload({
-      id: +id,
+      id: existingStudent.id,
       ...updateStudentDto,
-      password: this.passwordService.encodePassword(updateStudentDto.password),
+      password,
       department
     });
 
-    if (!updatedStudent) {
-      throw new NotFoundException(`Student with id: ${id} not found.`);
-    }
-
-    return this.studentRepo.update(id, updatedStudent);
+    return this.studentRepo.update(existingStudent.id, updatedStudent);
   }
 
   async remove(id: number) {

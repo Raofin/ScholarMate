@@ -17,13 +17,13 @@ export class StudentController {
   }
 
   @Post('register')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe())
   register(@Body() createStudentDto: CreateStudentDto) {
     return this.studentService.register(createStudentDto);
   }
 
   @Post('login')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe())
   async login(
     @Session() session,
     @Body() loginDto: LoginDto
@@ -55,7 +55,7 @@ export class StudentController {
   }
 
   @Patch('my-profile')
-  @UsePipes(ValidationPipe)
+  @UsePipes(new ValidationPipe())
   update(
     @Session() session,
     @Body() updateStudentDto: UpdateStudentDto

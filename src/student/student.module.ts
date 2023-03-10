@@ -6,6 +6,8 @@ import { Student } from './student.entity';
 import { Department } from '../department/department.entity';
 import { Enrollment } from '../enrollment/enrollment.entity';
 import { MailerModule } from "@nestjs-modules/mailer";
+import { MailService } from './mail.service';
+import { PasswordService } from './password.service';
 
 
 @Module({
@@ -22,6 +24,6 @@ import { MailerModule } from "@nestjs-modules/mailer";
                   }
       })],
   controllers: [StudentController],
-  providers: [StudentService]
+  providers: [StudentService, MailService, PasswordService]
 })
 export class StudentModule {}
