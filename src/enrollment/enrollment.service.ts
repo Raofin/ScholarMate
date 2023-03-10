@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Enrollment } from './enrollment.entity';
@@ -17,6 +17,28 @@ export class EnrollmentService {
     private readonly registrarRepo: Repository<Registrar>,
     @InjectRepository(Course)
     private readonly courseRepo: Repository<Course>
-  ) { }
+  ) {
+  }
 
+  async enrollCourse(email: string, courseId: number) {
+    const student = await this.studentRepo.findOne({
+      where: { email }
+    });
+
+    if (!await this.courseRepo.findOne({ where: { id: courseId } })) {
+      throw new NotFoundException(`Course with id: ${courseId} not found!`);
+    }
+
+    const enroll = await this.enrollmentRepo.save({
+      status: 'Approval Pending',
+      enrollmentDate: new Date(),
+      student: student,
+      course: { id: courseId }
+    });
+
+    return this.enrollmentRepo.findOne({
+      where: { id: enroll.id },
+      relations: ['student', 'course']
+    })
+  }
 }

@@ -10,11 +10,15 @@ import { CreateStudentDto, UpdateStudentDto } from './student.dto';
 import { LoginDto } from './login.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { EnrollmentService } from '../enrollment/enrollment.service';
 
 @Controller('students')
 export class StudentController {
-  constructor(private readonly studentService: StudentService) {
+  constructor(
+    private readonly studentService: StudentService,
+    private readonly enrollmentService: EnrollmentService) {
   }
+
 
   @Post('register')
   @UsePipes(new ValidationPipe())
@@ -94,6 +98,18 @@ export class StudentController {
   myCourses(@Session() session) {
     if (session.email) {
       return this.studentService.courses(session.email);
+    }
+
+    throw new UnauthorizedException('You are not logged in');
+  }
+
+  @Post('enroll-course/:id')
+  enroll(
+    @Session() session,
+    @Param('id', ParseIntPipe) id: number
+  ) {
+    if (session.email) {
+      return this.enrollmentService.enrollCourse(session.email, id);
     }
 
     throw new UnauthorizedException('You are not logged in');
