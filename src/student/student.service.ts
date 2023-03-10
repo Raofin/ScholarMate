@@ -23,6 +23,8 @@ export class StudentService {
   ) {
   }
 
+  public static OTP: number;
+
   async findAll() {
     return await this.studentRepo.find({
       relations: ['department', 'department.admin', 'department.head']
@@ -57,15 +59,26 @@ export class StudentService {
       department
     });
 
+    MailService.OTP = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+
     const emailData = {
       email: student.email,
       subject: 'Registration Successful',
-      text: `Dear ${student.name}, Your registration was successful. Your Student ID is ${student.studentId}`
+      text: `Dear ${student.name}, Your registration was successful. Your OTP is: ${MailService.OTP}`
     };
 
     await this.mailService.sendEmail(emailData);
 
     return this.studentRepo.save(student);
+  }
+
+  async verifyOTP(otp: number) {
+    if (MailService.OTP == otp) {
+      MailService.OTP = null;
+      return 'Email verified!';
+    }
+
+    return `${MailService.OTP} Invalid OTP! Please try again.`;
   }
 
   async login(loginDto: LoginDto) {
@@ -153,7 +166,8 @@ export class StudentService {
     });
 
     return await this.enrollmentRepo.find({
-      where: { student }
+      where: { student },
+      relations: ['course']
     });
   }
 }

@@ -41,4 +41,26 @@ export class EnrollmentService {
       relations: ['student', 'course']
     })
   }
+
+  async dropCourse(email: string, courseId: number) {
+    const student = await this.studentRepo.findOne({
+      where: { email }
+    });
+
+    if (!await this.courseRepo.findOne({ where: { id: courseId } })) {
+      throw new NotFoundException(`Course with id: ${courseId} not found!`);
+    }
+
+    const enrollment = await this.enrollmentRepo.findOne({
+      where: { student, course: { id: courseId } }
+    });
+
+    if (!enrollment) {
+      throw new NotFoundException(`Enrollment not found!`);
+    }
+
+    await this.enrollmentRepo.remove(enrollment);
+
+    return enrollment;
+  }
 }

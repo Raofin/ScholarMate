@@ -3,7 +3,7 @@ import {
   ParseArrayPipe, ParseEnumPipe, ParseIntPipe,
   Post, Put, Patch, UsePipes, ValidationPipe,
   Session, UnauthorizedException, UseInterceptors, UploadedFile,
-  ParseFilePipe, MaxFileSizeValidator, FileTypeValidator
+  ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Res, Req
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto, UpdateStudentDto } from './student.dto';
@@ -11,6 +11,7 @@ import { LoginDto } from './login.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { EnrollmentService } from '../enrollment/enrollment.service';
+import { MailService } from './mail.service';
 
 @Controller('students')
 export class StudentController {
@@ -24,6 +25,11 @@ export class StudentController {
   @UsePipes(new ValidationPipe())
   register(@Body() createStudentDto: CreateStudentDto) {
     return this.studentService.register(createStudentDto);
+  }
+
+  @Post('verify-email')
+  verifyEmail(@Req() req) {
+    return this.studentService.verifyOTP(req.body.otp);
   }
 
   @Post('login')
@@ -110,6 +116,18 @@ export class StudentController {
   ) {
     if (session.email) {
       return this.enrollmentService.enrollCourse(session.email, id);
+    }
+
+    throw new UnauthorizedException('You are not logged in');
+  }
+
+  @Delete('drop-course/:id')
+  dropCourse(
+    @Session() session,
+    @Param('id', ParseIntPipe) id: number
+  ) {
+    if (session.email) {
+      return this.enrollmentService.dropCourse(session.email, id);
     }
 
     throw new UnauthorizedException('You are not logged in');

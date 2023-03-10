@@ -13,4 +13,6 @@ export class MailService {
       text: data.text
     });
   }
+
+  static OTP: number;
 }
