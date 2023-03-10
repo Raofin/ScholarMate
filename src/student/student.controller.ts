@@ -1,23 +1,33 @@
 import {
   Body, Controller, Delete, Get, Param,
   ParseArrayPipe, ParseEnumPipe, ParseIntPipe,
-  Post, Put, Patch, UsePipes, ValidationPipe, Session, UnauthorizedException
+  Post, Put, Patch, UsePipes, ValidationPipe,
+  Session, UnauthorizedException, UseInterceptors, UploadedFile,
+  ParseFilePipe, MaxFileSizeValidator, FileTypeValidator
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto, UpdateStudentDto } from './student.dto';
 import { LoginDto } from './login.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
 @Controller('students')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {
   }
 
+  @Post('register')
+  @UsePipes(ValidationPipe)
+  register(@Body() createStudentDto: CreateStudentDto) {
+    return this.studentService.register(createStudentDto);
+  }
+
   @Post('login')
   @UsePipes(ValidationPipe)
   async login(
     @Session() session,
-    @Body() loginDto: LoginDto) {
-
+    @Body() loginDto: LoginDto
+  ) {
     if (await this.studentService.login(loginDto)) {
       session.email = loginDto.email;
       return { message: 'Login successful' };
@@ -32,7 +42,7 @@ export class StudentController {
       return { message: 'Logout successful' };
     }
 
-    throw new UnauthorizedException('User is not logged in');
+    throw new UnauthorizedException('You are not logged in');
   }
 
   @Get('my-profile')
@@ -41,7 +51,43 @@ export class StudentController {
       return this.studentService.profile(session.email);
     }
 
-    throw new UnauthorizedException('User is not logged in');
+    throw new UnauthorizedException('You are not logged in');
+  }
+
+  @Patch('my-profile')
+  @UsePipes(ValidationPipe)
+  update(
+    @Session() session,
+    @Body() updateStudentDto: UpdateStudentDto
+  ) {
+    if (session.email) {
+      return this.studentService.update(session.email, updateStudentDto);
+    }
+
+    throw new UnauthorizedException('You are not logged in');
+  }
+
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('myfile', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename(req, file, cb) {
+          cb(null, Date.now() + '_' + file.originalname);
+        }
+      })
+    })
+  )
+  signup(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 2097152 }), // 2MB
+          new FileTypeValidator({ fileType: 'png|jpg|jpeg' })
+        ]
+      })
+    ) file: Express.Multer.File) {
+    return file;
   }
 
   @Get('my-courses')
@@ -50,7 +96,7 @@ export class StudentController {
       return this.studentService.courses(session.email);
     }
 
-    throw new UnauthorizedException('User is not logged in');
+    throw new UnauthorizedException('You are not logged in');
   }
 
   @Get()
@@ -63,28 +109,8 @@ export class StudentController {
     return this.studentService.findById(id);
   }
 
-  @Post('register')
-  @UsePipes(ValidationPipe)
-  register(@Body() createStudentDto: CreateStudentDto) {
-    return this.studentService.register(createStudentDto);
-  }
-
-  @Patch(':id')
-  @UsePipes(ValidationPipe)
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateStudentDto: UpdateStudentDto) {
-    return this.studentService.update(id, updateStudentDto);
-  }
-
   @Delete(':id')
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.studentService.remove(id);
-  }
-
-  @Post('send-email')
-  sendEmail() {
-    const data = 'hello world';
-    return this.studentService.sendEmail(data);
   }
 }
