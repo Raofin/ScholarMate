@@ -8,6 +8,7 @@ import { LoginDto } from './login.dto';
 import { Enrollment } from '../enrollment/enrollment.entity';
 import { MailService } from './mail.service';
 import { PasswordService } from './password.service';
+import { Upload } from '../upload/upload.entity';
 
 @Injectable()
 export class StudentService {
@@ -18,12 +19,11 @@ export class StudentService {
     private readonly departmentRepo: Repository<Department>,
     @InjectRepository(Enrollment)
     private readonly enrollmentRepo: Repository<Enrollment>,
+    @InjectRepository(Upload)
+    private readonly uploadRepo: Repository<Upload>,
     private readonly passwordService: PasswordService,
     private readonly mailService: MailService
-  ) {
-  }
-
-  public static OTP: number;
+  ) { }
 
   async findAll() {
     return await this.studentRepo.find({
@@ -119,7 +119,9 @@ export class StudentService {
   }
 
   async update(email: string, updateStudentDto: UpdateStudentDto) {
-    const existingStudent = await this.studentRepo.findOne({ where: { email } });
+    const existingStudent = await this.studentRepo.findOne({
+      where: { email }
+    });
 
     const department = await this.departmentRepo.findOne({
       where: { id: updateStudentDto.departmentId }
@@ -136,7 +138,7 @@ export class StudentService {
     let password = updateStudentDto.password;
 
     if (password != null) {
-       password  = this.passwordService.encodePassword(updateStudentDto.password);
+      password = this.passwordService.encodePassword(updateStudentDto.password);
     }
 
     const updatedStudent = await this.studentRepo.preload({
@@ -168,6 +170,33 @@ export class StudentService {
     return await this.enrollmentRepo.find({
       where: { student },
       relations: ['course']
+    });
+  }
+
+  async upload(email: string, filename: string) {
+    const student = await this.studentRepo.findOne({
+      where: { email }
+    });
+
+    const uploadedFile = await this.uploadRepo.save({
+      fileName: filename,
+      uploadDate: new Date(),
+      student: student
+    });
+
+    return this.uploadRepo.findOne({
+      where: { id: uploadedFile.id },
+      relations: ['student']
+    });
+  }
+
+  async uploads(email: string) {
+    const student = await this.studentRepo.findOne({
+      where: { email }
+    });
+
+    return await this.uploadRepo.find({
+      where: { student }
     });
   }
 }

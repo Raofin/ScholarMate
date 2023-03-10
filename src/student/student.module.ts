@@ -11,10 +11,12 @@ import { PasswordService } from './password.service';
 import { EnrollmentService } from '../enrollment/enrollment.service';
 import { Registrar } from '../registrar/registrar.entity';
 import { Course } from '../course/course.entity';
+import { UploadService } from '../upload/upload.service';
+import { Upload } from '../upload/upload.entity';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Student, Department, Enrollment, Registrar, Course]), MailerModule.forRoot({
+  imports: [TypeOrmModule.forFeature([Student, Department, Enrollment, Registrar, Course, Upload]), MailerModule.forRoot({
     transport: {
       host: 'smtp.gmail.com',
       port: 465,

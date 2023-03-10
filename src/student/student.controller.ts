@@ -11,14 +11,14 @@ import { LoginDto } from './login.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { EnrollmentService } from '../enrollment/enrollment.service';
-import { MailService } from './mail.service';
+import { UploadService } from '../upload/upload.service';
 
 @Controller('students')
 export class StudentController {
   constructor(
     private readonly studentService: StudentService,
-    private readonly enrollmentService: EnrollmentService) {
-  }
+    private readonly enrollmentService: EnrollmentService
+  ) {  }
 
 
   @Post('register')
@@ -88,7 +88,8 @@ export class StudentController {
       })
     })
   )
-  signup(
+  async signup(
+    @Session() session,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -97,7 +98,21 @@ export class StudentController {
         ]
       })
     ) file: Express.Multer.File) {
-    return file;
+    if (session.email) {
+      await this.studentService.upload(session.email, file.filename);
+      return file;
+    }
+
+    throw new UnauthorizedException('You are not logged in');
+  }
+
+  @Get('my-uploads')
+  async myUploads(@Session() session) {
+    if (session.email) {
+      return this.studentService.uploads(session.email);
+    }
+
+    throw new UnauthorizedException('You are not logged in');
   }
 
   @Get('my-courses')
