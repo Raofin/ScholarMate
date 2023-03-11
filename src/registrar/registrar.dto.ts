@@ -16,7 +16,7 @@ export class CreateRegistrarDto {
   readonly password: string;
 
   @Matches(/^\d{11}$/, { message: 'Phone must be 11 digits' })
-  readonly phone: number;
+  readonly phone: string;
 
   @IsDateString()
   readonly joinDate: Date;

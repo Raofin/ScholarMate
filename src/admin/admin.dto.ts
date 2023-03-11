@@ -13,10 +13,10 @@ export class CreateAdminDto {
 
   @IsString({ message: 'Password must be a string' })
   @Length(6, 20, { message: 'Password must be between 6 and 20 characters' })
-  readonly password: number;
+  readonly password: string;
 
   @Matches(/^\d{11}$/, { message: 'Phone must be 11 digits' })
-  readonly phone: number;
+  readonly phone: string;
 
   @IsDateString()
   readonly joinDate: Date;

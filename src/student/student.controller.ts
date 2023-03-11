@@ -88,7 +88,7 @@ export class StudentController {
       })
     })
   )
-  async signup(
+  async upload(
     @Session() session,
     @UploadedFile(
       new ParseFilePipe({
