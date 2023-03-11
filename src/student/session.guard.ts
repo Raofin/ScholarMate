@@ -1,10 +1,15 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
 @Injectable()
 export class SessionGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
-    return request.session.email !== undefined;
+
+    if (request.session.email === undefined) {
+      throw new ForbiddenException('You are not logged in!');
+    }
+
+    return true;
   }
 }
