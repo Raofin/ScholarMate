@@ -52,6 +52,11 @@ export class StudentController {
     throw new UnauthorizedException('You are not logged in');
   }
 
+  @Get('forgot-password')
+  passwordRecover(@Req() req) {
+    return this.studentService.passwordRecover(req.body.email);
+  }
+
   @Get('my-profile')
   @UseGuards(SessionGuard)
   profile(@Session() session) {

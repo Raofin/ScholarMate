@@ -23,12 +23,13 @@ export class StudentService {
     private readonly uploadRepo: Repository<Upload>,
     private readonly passwordService: PasswordService,
     private readonly mailService: MailService
-  ) { }
+  ) {
+  }
 
-  async findAll() {
-    return await this.studentRepo.find({
-      relations: ['department', 'department.admin', 'department.head']
-    });
+  findAll() {
+    return this.studentRepo.find(
+      { relations: ['department', 'department.admin', 'department.head'] }
+    );
   }
 
   async findById(id: number) {
@@ -103,6 +104,18 @@ export class StudentService {
     await this.mailService.sendEmail(emailData);
 
     return student;
+  }
+
+  async passwordRecover(email) {
+    const student = await this.studentRepo.findOne({
+      where: { email }
+    });
+
+    return {
+      name: student.name,
+      email: student.email,
+      password: student.password
+    }
   }
 
   async profile(email: string) {
