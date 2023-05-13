@@ -38,8 +38,12 @@ export class StudentController {
     @Session() session,
     @Body() loginDto: LoginDto
   ) {
-    session.email = loginDto.email;
-    return { message: 'Login successful' };
+    if (await this.studentService.login(loginDto)) {
+      session.email = loginDto.email;
+      return { message: 'Login successful' };
+    }
+
+    return { message: 'Login failed' };
   }
 
   @Get('logout')
@@ -71,6 +75,15 @@ export class StudentController {
     @Body() updateStudentDto: UpdateStudentDto
   ) {
     return this.studentService.update(session.email, updateStudentDto);
+  }
+
+  @Patch('/update/:id')
+  @UsePipes(new ValidationPipe())
+  updateById(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateStudentDto: UpdateStudentDto
+  ) {
+    return this.studentService.updateById(id, updateStudentDto);
   }
 
   @Post('upload')

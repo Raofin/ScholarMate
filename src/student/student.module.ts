@@ -24,7 +24,7 @@ import { Upload } from '../upload/upload.entity';
       secure: true,
       auth: {
         user: 'project.mailer99@gmail.com',
-        pass: 'kaigjgpodlsqzeze'
+        pass: 'qcnoamraxqtkmalf'
       }
     }
   })],

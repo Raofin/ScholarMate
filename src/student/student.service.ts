@@ -84,7 +84,7 @@ export class StudentService {
 
   async login(loginDto: LoginDto) {
     const student = await this.studentRepo.findOne({
-      where: { email: loginDto.email }
+      where: { email: loginDto.email },
     });
 
     if (!student) {
@@ -142,6 +142,39 @@ export class StudentService {
 
     if (!existingStudent) {
       throw new NotFoundException(`Student with email: ${email} not found.`);
+    }
+
+    if (!department) {
+      throw new NotFoundException(`No departments with id: ${updateStudentDto.departmentId}!`);
+    }
+
+    let password = updateStudentDto.password;
+
+    if (password != null) {
+      password = this.passwordService.encodePassword(updateStudentDto.password);
+    }
+
+    const updatedStudent = await this.studentRepo.preload({
+      id: existingStudent.id,
+      ...updateStudentDto,
+      password,
+      department
+    });
+
+    return this.studentRepo.update(existingStudent.id, updatedStudent);
+  }
+
+  async updateById(id: number, updateStudentDto: UpdateStudentDto) {
+    const existingStudent = await this.studentRepo.findOne({
+      where: { id }
+    });
+
+    const department = await this.departmentRepo.findOne({
+      where: { id: updateStudentDto.departmentId }
+    });
+
+    if (!existingStudent) {
+      throw new NotFoundException(`Student with id: ${id} not found.`);
     }
 
     if (!department) {
