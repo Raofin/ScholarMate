@@ -40,7 +40,8 @@ export class StudentController {
   ) {
     if (await this.studentService.login(loginDto)) {
       session.email = loginDto.email;
-      return { message: 'Login successful' };
+      // return { message: 'Login successful' };
+        return this.studentService.profile(loginDto.email);
     }
 
     return { message: 'Login failed' };
