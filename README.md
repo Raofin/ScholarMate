@@ -1,8 +1,6 @@
 # ScholarMate
 ### Frontend: [github.com/Raofin/ScholarMate-Frontend](https://github.com/Raofin/ScholarMate-Frontend)
 
-⚠️ Please note that this project has not been fully completed yet. There is still a lot of work left, especially on the frontend.
-
 **ScholarMate** is a web-based university management system that facilitates course enrollment, grading, and administrative oversight, empowering students, faculty, and administrators to collaborate seamlessly. The project's key features include:
 
 - Students can choose and enroll in courses relevant to their departments.
